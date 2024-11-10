@@ -1,0 +1,124 @@
+﻿<!doctype html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<div th:replace="home/module/_header"></div>
+
+
+<!-- breadcrumb starts -->
+<section class="breadcrumb-outer">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <h2>东方酒店伴你快乐每一天</h2>
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">首页</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">客房列表</li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb Ends -->
+<!-- room list starts -->
+<section class="room-list">
+    <div class="container">
+        <div class="list-filter">
+            <form action="/" id="searchForm">
+            <div class="form-content text-center">
+                <div class="table-item">
+                    <div class="form-group">
+                        <div class="date-range-inner-wrapper">
+                            <input id="startDate" class="form-control" name="startDate" th:value="${startDate}" placeholder="入住日期" title="入住日期">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-item">
+                    <div class="form-group">
+                        <div class="date-range-inner-wrapper">
+                            <input id="endDate" class="form-control" name="endDate" th:value="${endDate}" placeholder="退房日期" title="退房日期">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-item">
+                    <div class="form-group form-icon">
+                        <select name="cateId">
+                            <option value="0">不限</option>
+                            <option th:selected="${cateId == cate.id}" th:value="${cate.id}" th:each="cate : ${categoryList}">[[${cate.cateName}]]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-item">
+                    <div class="form-btn">
+                        <a class="btn btn-orange" id="btn-search">快速查找</a>
+                        <input type="submit" id="submit-search" style="display: none">
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+        <div class="list-content">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-xs-6" th:each="post : ${posts.records}">
+                    <div class="room-item">
+                        <div class="room-image">
+                            <img th:src="${post.postThumbnail}" alt="image">
+                        </div>
+                        <div class="room-content">
+                            <div class="room-title">
+                                <h4>[[${post.postTitle}]]</h4>
+                                <p><i class="fa fa-tag"></i> ¥[[${post.price}]]/天</p>
+<!--                                <div class="deal-rating">-->
+<!--                                    <span class="fa fa-star checked"></span>-->
+<!--                                    <span class="fa fa-star checked"></span>-->
+<!--                                    <span class="fa fa-star checked"></span>-->
+<!--                                    <span class="fa fa-star checked"></span>-->
+<!--                                    <span class="fa fa-star checked"></span>-->
+<!--                                </div>-->
+                            </div>
+                            <div class="room-services mar-bottom-15">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <i class="fa fa-bed" aria-hidden="true"></i> [[${post.category.cateName}]]
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <i class="fa fa-building" aria-hidden="true"></i> [[${post.number}]]
+                                    </div>
+                                </div>
+                            </div>
+                            <p th:utext="${post.postSummary}+'...'" style="height: 72px;overflow: hidden;"></p>
+                            <div class="room-btns">
+                                <a th:href="'/post/'+${post.id}+'?startDate='+${startDate}+'&endDate='+${endDate}" class="btn btn-orange mar-right-10">查看&预定</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+
+        <div class="pagination-content text-center" th:if="${posts.total > 0}">
+            <ul class="pagination">
+                <li th:if="${posts.hasPrevious()}"><a th:href="'?page='+${posts.current-1}+'&startDate='+${startDate}+'&endDate='+${endDate}+'&cateId='+${cateId}"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>
+                <li th:classappend="${posts.current == i ? 'active' : ''}" th:each="i: ${#numbers.sequence(1, posts.pages)}">
+                    <a th:href="'?page='+${i}+'&startDate='+${startDate}+'&endDate='+${endDate}+'&cateId='+${cateId}">[[${i}]]</a>
+                </li>
+                <li th:if="${posts.hasNext()}"><a th:href="'?page='+${posts.current+1}+'&startDate='+${startDate}+'&endDate='+${endDate}+'&cateId='+${cateId}"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!-- room list Ends -->
+
+<div th:replace="home/module/_footer"></div>
+
+

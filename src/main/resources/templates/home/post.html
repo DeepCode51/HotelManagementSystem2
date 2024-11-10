@@ -1,0 +1,124 @@
+﻿<!doctype html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+    <div th:replace="home/module/_header"></div>
+
+    <!-- breadcrumbs starts -->
+    <section class="breadcrumb-outer">
+        <div class="container">
+            <div class="breadcrumb-content">
+                <h2>[[${post.postTitle}]]</h2>
+                <nav aria-label="breadcrumb">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">首页</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">客房详情</li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+    <!-- breadcrumbs Ends -->
+
+    <!-- details starts -->
+    <section class="details">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="detail-slider">
+                        <div class="slider-1 slider-for">
+                            <div class="detail-slider-item"  th:each="imgUrl : ${imgUrlList}">
+                                <img th:src="${imgUrl}" alt="image">
+                            </div>
+                        </div>
+                        <div class="slider-1 slider-nav">
+                            <div class="detail-slider-item" th:each="imgUrl : ${imgUrlList}">
+                                <img th:src="${imgUrl}" alt="image">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-title">
+                            <div class="title-left">
+                                <h3>[[${post.number}]]-[[${post.postTitle}]]</h3>
+                            </div>
+                        </div>
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                <div class="tab-pane active" id="1a">
+                                    <div class="detail-overview detail-box">
+                                        <div th:utext="${post.postContent}"></div>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="detail-sidebar">
+                        <div class="sidebar-form reservation-form">
+                            <div class="form-price">
+                                <img src="/static/front/images/icons/bed-orange.png" alt="image">
+                                <div class="title-price">
+                                    <h2>¥[[${post.price}]]<span>/天</span></h2>
+                                </div>
+                            </div>
+
+                            <div class="banner-form form-style-2">
+
+                                <div class="form-content">
+                                    <div class="form-content-inner">
+                                        <form action="/checkout">
+                                            <input type="hidden" id="postId" name="postId" th:value="${post.id}">
+                                            <div class="table-item">
+                                                <label>入住日期</label>
+                                                <div class="form-group">
+                                                    <div class="date-range-inner-wrapper">
+                                                        <input id="startDate" name="startDate" class="form-control"
+                                                               th:value="${startDate}">
+                                                        <span class="input-group-addon">
+                                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-item">
+                                                <label>退房日期</label>
+                                                <div class="form-group">
+                                                    <div class="date-range-inner-wrapper">
+                                                        <input id="endDate" name="endDate" class="form-control"
+                                                               th:value="${endDate}">
+                                                        <span class="input-group-addon">
+                                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-item">
+                                                <div class="form-btn">
+                                                    <a class="btn btn-orange" id="btn-checkout">快速预定</a>
+                                                    <input type="submit" style="display: none" id="submit-checkout">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebar-support">
+                            <h3>客服电话</h3>
+                            <p>24小时客服电话，快速咨询和预定</p>
+                            <p><i class="fa fa-phone"></i>21-2327-2888</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- details Ends -->
+
+
+    <div th:replace="home/module/_footer"></div>

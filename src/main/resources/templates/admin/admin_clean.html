@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/module/_header"></div>
+<div class="wrapper">
+    <!-- 菜单栏模块 -->
+    <div th:replace="admin/module/_sidebar"></div>
+    <div class="content-wrapper">
+        <style type="text/css" rel="stylesheet">
+            .draft, .publish, .trash, .checking {
+                list-style: none;
+                float: left;
+                margin: 0;
+                padding-bottom: 10px
+            }
+
+            #btnNewclean {
+                margin-left: 4px;
+                padding: 3px 6px;
+                position: relative;
+                top: -4px;
+                border: 1px solid #ccc;
+                border-radius: 2px;
+                background: #fff;
+                text-shadow: none;
+                font-weight: 600;
+                font-size: 12px;
+                line-height: normal;
+                color: #3c8dbc;
+                cursor: pointer;
+                transition: all .2s ease-in-out
+            }
+
+            #btnNewclean:hover {
+                background: #3c8dbc;
+                color: #fff
+            }
+
+            .label {
+                background-color: #d6cdcd;
+            }
+
+            .box-body {
+                padding: 0;
+            }
+
+            .box {
+                border-top: 0;
+            }
+        </style>
+        <section class="content-header">
+            <h1 style="display: inline-block;">客房管理</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a data-pjax="true" href="/admin">
+                        <i class="fa fa-dashboard"></i> 首页</a>
+                </li>
+                <li><a data-pjax="true" href="#">客房管理</a></li>
+                <li class="active">客房列表</li>
+            </ol>
+        </section>
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul style="list-style: none;padding-left: 0; vertical-align: center">
+                        <li class="publish">
+                            <a data-pjax="true" th:style="${status == -1 ? 'color: #000':''}" href="?status=-1">全部 |&nbsp;</a>
+                        </li>
+                        <li class="publish">
+                            <a data-pjax="true" th:style="${status == 0 ? 'color: #000':''}" href="?status=0">待清洁 |&nbsp;</a>
+                        </li>
+                        <li class="draft">
+                            <a data-pjax="true" th:style="${status == 1 ? 'color: #000':''}" href="?status=1">正在清洁 |&nbsp;</a>
+                        </li>
+                        <li class="draft">
+                            <a data-pjax="true" th:style="${status == 2 ? 'color: #000':''}" href="?status=2">完成清洁 </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-xs-12">
+                    <div class="col-md-4 col-xs-12" style="margin-bottom: 10px;padding-left: 0;">
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-body table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+<!--                                    <th class="col-md-1"><input type="checkbox" id="allSelect" onclick="doCheck()"></th>-->
+                                    <th class="col-md-2">客房</th>
+                                    <th class="col-md-2">退房时间</th>
+                                    <th class="col-md-1">状态</th>
+                                    <th class="col-md-1">清洁员</th>
+                                    <th class="col-md-2">清洁开始时间</th>
+                                    <th class="col-md-2">清洁完成时间</th>
+                                    <th class="col-md-2">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:id="'clean-'+${clean.id}" th:each="clean : ${cleanList}">
+<!--                                    <td><input type="checkbox" name="ids" th:value="${clean.id}"></td>-->
+                                    <td>
+                                        [[${clean.postTitle}]]-[[${clean.number}]]
+                                    </td>
+                                    <td th:text="${#dates.format(clean.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td>
+                                        <span th:if="${clean.status == 0}" class="text-red">待清洁</span>
+                                        <span th:if="${clean.status == 1}" class="text-warning">正在清洁</span>
+                                        <span th:if="${clean.status == 2}" class="text-success">完成清洁</span>
+                                    </td>
+                                    <td>
+                                        [[${clean.updateBy}]]
+                                    </td>
+                                    <td th:text="${#dates.format(clean.startTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td th:text="${#dates.format(clean.finishTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+
+                                    <td>
+                                        <button class="btn btn-info btn-xs " th:if="${clean.status == 0}" th:onclick="'startIt('+${clean.id}+')'">
+                                            开始清洁
+                                        </button>
+                                        <button class="btn btn-success btn-xs "  th:if="${clean.status == 1}" th:onclick="'finishIt('+${clean.id}+')'">
+                                            完成清洁
+                                        </button>
+                                        <button th:if="${currentRole.role != 'cleaner'}" class="btn btn-danger btn-xs " th:onclick="'throwIt('+${clean.id}+')'">
+                                            删除
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="box-footer clearfix">
+                            <div class="no-margin pull-left">
+                                第 [[${pageInfo.current}]] / [[${pageInfo.pages}]] 页
+                            </div>
+                            <ul class="pagination no-margin pull-right">
+                                <li><a data-pjax="true" th:classappend="${pageInfo.current == 1 ? 'disabled' : ''}"
+                                       class="btn btn-sm"
+                                       th:href="'/admin/clean?status='+${status}">
+                                    首页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current == 1 ? 'disabled' : ''}"
+                                       th:href="'/admin/clean?status='+${status}+'&page='+${pageInfo.current-1}+'&status='+${status}">
+                                    上一页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current >= pageInfo.pages ? 'disabled' : ''}"
+                                       th:href="'/admin/clean?status='+${status}+'&page='+${pageInfo.current+1}">
+                                    下一页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current >= pageInfo.pages ? 'disabled' : ''}"
+                                       th:href="'/admin/clean?status='+${status}+'&page='+${pageInfo.pages}">
+                                    尾页
+                                </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script>
+
+            function startIt(id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/clean/start',
+                    async: false,
+                    data: {
+                        'id': id
+                    },
+                    success: function (data) {
+                        if (data.code == 0) {
+                            showMsg(data.msg, "error", 1000);
+                        } else {
+                            showMsgAndReload(data.msg, "success", 2000);
+
+                        }
+                    }
+                });
+            }
+
+            function finishIt(id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/clean/finish',
+                    async: false,
+                    data: {
+                        'id': id
+                    },
+                    success: function (data) {
+                        if (data.code == 0) {
+                            showMsg(data.msg, "error", 1000);
+                        } else {
+                            showMsgAndReload(data.msg, "success", 2000);
+
+                        }
+                    }
+                });
+            }
+
+            function throwIt(id) {
+                layer.confirm('请确认是否删除', function (index) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/clean/delete',
+                        async: false,
+                        data: {
+                            'id': id
+                        },
+                        success: function (data) {
+                            if (data.code == 0) {
+                                showMsg(data.msg, "error", 1000);
+                            } else {
+                                showMsgAndReload(data.msg, "success", 2000);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+
+
+            function batchDelete() {
+                var arr = [];
+                $('input[name="ids"]:checked').each(function () {
+                    arr.push($(this).val());
+                });
+                if (arr.length <= 0) {
+                    showMsg('请选择需要删除的数据', "error", 1000);
+                } else {
+                    layer.confirm('请确认是否删除', function (index) {
+                        $.ajax({
+                            url: "/admin/clean/batchDelete?ids=" + arr,
+                            type: "POST",
+                            success: function (data) {
+                                if (data.code == 0) {
+                                    showMsg(data.msg, "error", 1000);
+                                } else {
+                                    showMsgAndReload(data.msg, "success", 2000);
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    });
+                }
+            }
+
+
+        </script>
+    </div>
+</div>
+<div th:replace="admin/module/_footer"></div>

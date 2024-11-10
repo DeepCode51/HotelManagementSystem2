@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/module/_header"></div>
+
+<div class="wrapper">
+    <div th:replace="admin/module/_sidebar"></div>
+    <div class="content-wrapper">
+        <style type="text/css" rel="stylesheet">
+            .role-ul > li {
+                list-style: none;
+                float: left;
+                margin: 0;
+                padding-bottom: 10px
+            }
+        </style>
+        <section class="content-header">
+            <h1 style="display: inline-block;">财务管理</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a data-pjax="true" href="/admin">
+                        <i class="fa fa-dashboard"></i> 首页</a>
+                </li>
+                <li><a data-pjax="true" href="#">财务管理</a></li>
+                <li class="active">收入列表</li>
+            </ol>
+        </section>
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-xs-4">
+                    总收入: <strong style="font-size: 2em;">¥[[${totalPrice}]]</strong>
+                </div>
+                <div class="col-xs-8">
+                    <div class="md" style="margin-bottom: 10px; text-align:right;padding-left: 0; padding-right: 0;">
+                        <form class="form-inline" action="/admin/order/finance">
+                            <div class="form-group">
+                                <input type="date" class="form-control"  title="开始日期" name="startDate" th:value="${startDate}" placeholder="开始日期">
+                            </div>
+                            <div class="form-group">
+                                <input type="date" class="form-control"  title="结束日期" name="endDate" th:value="${endDate}" placeholder="结束日期">
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-body table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>客房名称</th>
+                                    <th>客户姓名</th>
+                                    <th>客户手机</th>
+                                    <th>入住日期</th>
+                                    <th>退房日期</th>
+                                    <th>天数</th>
+                                    <th>金额</th>
+                                    <th>创建时间</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:id="'order-'+${order.id}" th:each="order : ${orders}">
+                                    <td>[[${order.postNumber}]]-[[${order.postTitle}]]</td>
+                                    <td>[[${order.name}]]</td>
+                                    <td>[[${order.phone}]]</td>
+                                    <td>[[${order.startDate}]]</td>
+                                    <td>[[${order.endDate}]]</td>
+                                    <td>[[${order.quantity}]]</td>
+                                    <td>¥[[${order.totalPrice}]]</td>
+                                    <td th:text="${#dates.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="box-footer clearfix">
+                            <div class="no-margin pull-left">
+                                第 [[${pageInfo.current}]] / [[${pageInfo.pages}]] 页
+                            </div>
+                            <ul class="pagination no-margin pull-right">
+                                <li><a data-pjax="true"  th:classappend="${pageInfo.current == 1 ? 'disabled' : ''}" class="btn btn-sm"
+                                       th:href="'/admin/order/finance?startDate='+${startDate}+'&endDate='+${endDate}">
+                                    首页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"  th:classappend="${pageInfo.current == 1 ? 'disabled' : ''}"
+                                       th:href="'/admin/order/finance?startDate='+${startDate}+'&endDate='+${endDate}+'&page='+${pageInfo.current-1}">
+                                    上一页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"  th:classappend="${pageInfo.current >= pageInfo.pages ? 'disabled' : ''}"
+                                       th:href="'/admin/order/finance?startDate='+${startDate}+'&endDate='+${endDate}+'&page='+${pageInfo.current+1}">
+                                    下一页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm" th:classappend="${pageInfo.current >= pageInfo.pages ? 'disabled' : ''}"
+                                       th:href="'/admin/order/finance?startDate='+${startDate}+'&endDate='+${endDate}+'&page='+${pageInfo.pages}">
+                                    尾页
+                                </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<div th:replace="admin/module/_footer"></div>
+

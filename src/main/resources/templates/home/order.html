@@ -1,0 +1,252 @@
+﻿<!doctype html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+    <div th:replace="home/module/_header"></div>
+
+    <!-- breadcrumbs starts -->
+    <section class="breadcrumb-outer">
+        <div class="container">
+            <div class="breadcrumb-content">
+                <h2>[[${order.postTitle}]]</h2>
+                <nav aria-label="breadcrumb">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">首页</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">预定客房</li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+    <!-- breadcrumbs Ends -->
+    <section id="checkout-main" class="checkout-main section-padding">
+        <div class="container">
+            <div class="checkout-inner">
+
+
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="checkout-order">
+                            <h4 class="mar-bottom-20">订单信息</h4>
+                            <div class="order-list">
+                                <table class="shop_table rt-checkout-review-order-table">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            订单号
+                                        </td>
+                                        <td>
+                                            [[${order.code}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            客房信息
+                                        </td>
+                                        <td>
+                                            <a th:href="'/post/'+${order.postId}">[[${order.postTitle}]]</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            房间号
+                                        </td>
+                                        <td>
+                                            [[${order.postNumber}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            入住日期
+                                        </td>
+                                        <td>
+                                            [[${order.startDate}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            退房日期
+                                        </td>
+                                        <td>
+                                            [[${order.endDate}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            单价
+                                        </td>
+                                        <td>
+                                            <strong>
+                                        <span class="rt-Price-amount">
+                                            <span>¥</span>[[${order.price}]]/日
+                                        </span>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            天数
+                                        </td>
+                                        <td>
+                                            [[${order.quantity}]]
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr class="order-total">
+                                        <th>总价</th>
+                                        <td>
+                                            <strong>
+                                        <span class="rt-Price-amount">
+                                            <span>¥</span>[[${order.totalPrice}]]
+                                        </span>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr class="order-total">
+                                        <th>状态</th>
+                                        <td>
+                                            <strong>
+                                                <span th:if="${order.status == 0}" class="text-warning">待支付</span>
+                                                <span th:if="${order.status == 1}" class="text-info">已支付</span>
+                                                <span th:if="${order.status == 2}" class="text-success">已退房</span>
+                                                <span th:if="${order.status == 3}" class="text-danger">已关闭</span>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr class="order-total">
+                                        <th>订单创建时间</th>
+                                        <td th:text="${#dates.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="checkout-info" style="margin-bottom: 40px;">
+                            <h4 class="mar-bottom-20">联系方式</h4>
+                            <div class="order-list">
+                                <table class="shop_table rt-checkout-review-order-table" >
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            姓名
+                                        </td>
+                                        <td>
+                                            [[${order.name}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            手机号
+                                        </td>
+                                        <td>
+                                            [[${order.phone}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            身份证
+                                        </td>
+                                        <td>
+                                            [[${order.idCard}]]
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="checkout-info" style="margin-bottom: 40px;">
+                            <h4 class="mar-bottom-20">入住登记</h4>
+                            <div class="order-list">
+                                <table class="shop_table rt-checkout-review-order-table" th:if="${inrecord != null}">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            手机号
+                                        </td>
+                                        <td>
+                                            [[${inrecord.name}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            身份证号码
+                                        </td>
+                                        <td>
+                                            [[${inrecord.name}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            入住时间
+                                        </td>
+                                        <td>
+                                            [[${#dates.format(inrecord.createTime,'yyyy-MM-dd HH:mm:ss')}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            是否支付押金
+                                        </td>
+                                        <td>
+                                            <span th:if="${inrecord.payDepositFlag == 1}" class="text-success">已支付</span>
+                                            <span th:if="${inrecord.payDepositFlag == 0}" class="text-danger">未支付</span>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="checkout-info" style="margin-bottom: 40px;">
+                            <h4 class="mar-bottom-20">退房登记</h4>
+                            <div class="order-list">
+                                <table class="shop_table rt-checkout-review-order-table" th:if="${outrecord != null}">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            退房时间
+                                        </td>
+                                        <td>
+                                            [[${#dates.format(outrecord.createTime,'yyyy-MM-dd HH:mm:ss')}]]
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            是否退还押金
+                                        </td>
+                                        <td>
+                                            <span th:if="${outrecord.returnDepositFlag == 1}" class="text-success">已退</span>
+                                            <span th:if="${outrecord.returnDepositFlag == 0}" class="text-danger">未退</span>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="home/module/_footer"></div>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title> 东方酒店</title>
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico">
+        <!-- Bootstrap core CSS -->
+        <link href="/static/front/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <!--Default CSS-->
+        <link href="/static/front/css/default.css" rel="stylesheet" type="text/css">
+        <!--Custom CSS-->
+        <link href="/static/front/css/style.css" rel="stylesheet" type="text/css">
+        <!--Plugin CSS-->
+        <link href="/static/front/css/plugin.css" rel="stylesheet" type="text/css">
+        <link href="/static/plugins/toast/css/jquery.toast.min.css" rel="stylesheet" type="text/css">
+        <!--Font Awesome-->
+        <!--        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+        <!--        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">-->
+        <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+
+    </head>
+    <body>
+
+
+        <!-- Preloader -->
+        <!--        <div id="preloader">-->
+        <!--            <div id="status"></div>-->
+        <!--        </div>-->
+        <!-- Preloader Ends -->
+
+        <!-- header start -->
+        <header class="main_header_area">
+            <div class="header-content">
+                <div class="container">
+                    <div class="links links-left">
+                        <ul>
+                            <li><a href="#"><i class="fa fa-envelope" aria-hidden="true"></i> dfhotel@edu.cn</a></li>
+                            <li><a href="#"><i class="fa fa-phone" aria-hidden="true"></i> 0573-87571010</a></li>
+                            <li><a href="#"><i class="fa fa-map-marker" aria-hidden="true"></i>  浙江省海宁市连杭经济开发区高新区仰山路2号</a></li>
+                        </ul>
+                    </div>
+                    <div class="links links-right pull-right">
+                        <ul style="display: none;" id="notLoginUl">
+                            <li>
+                                <a href="#" data-toggle="modal" id="btn-login-model" data-target="#login">
+                                    <i class="fa fa-user"></i>
+                                    登录
+                                </a>
+                            </li>
+                            <li><a href="#" data-toggle="modal" data-target="#register">
+                                <i class="fa fa-pencil"></i>
+                                注册</a>
+                            </li>
+                        </ul>
+                        <ul style="display: none;" id="loginUl">
+                            <li>
+                                <a href="/admin">
+                                    <i class="fa fa-dashboard"></i> 后台
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" id="btn-logout">
+                                    <i class="fa fa-user"></i>
+                                    退出</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Navigation Bar -->
+            <div class="header_menu affix-top">
+                <nav class="navbar navbar-default">
+                    <div class="container">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="/">
+                                <!--<img alt="Image" src="/static/front/images/logo.png" class="logo-white">-->
+                                <!--<img alt="Image" src="/static/front/images/logo-black.png" class="logo-black">-->
+                            </a>
+                        </div>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav" id="responsive-menu">
+                                <li class="dropdown submenu">
+                                    <a href="/" class="dropdown-toggle">首页</a>
+                                </li>
+                                <li class="dropdown" th:each="cate : ${categoryList}">
+                                    <a th:href="'/?cateId='+${cate.id}">[[${cate.cateName}]]</a>
+                                </li>
+                                <li class="dropdown submenu">
+                                    <a href="/comment" class="dropdown-toggle">留言板</a>
+                                </li>
+                            </ul>
+                        </div><!-- /.navbar-collapse -->
+                    </div><!-- /.container-fluid -->
+                    <div id="slicknav-mobile"></div>
+                </nav>
+            </div>
+            <!-- Navigation Bar Ends -->
+        </header>
+        <!-- header Ends -->

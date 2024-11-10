@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/module/_header"></div>
+
+<div class="wrapper">
+    <!-- 菜单栏模块 -->
+    <div th:replace="admin/module/_sidebar"></div>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                添加退房登记
+            </h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a data-pjax="true" href="/admin">
+                        <i class="fa fa-dashboard"></i> 首页</a>
+                </li>
+                <li><a data-pjax="true" href="#">退房登记管理</a></li>
+                <li class="active">添加退房登记</li>
+            </ol>
+        </section>
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">添加退房登记</h3>
+                        </div>
+                        <form id="form">
+                            <div class="box-body">
+                                <div class="col-md-6 col-xs-12 no-padding">
+                                    <div class="form-group">
+                                        <label for="orderCode">订单号</label>
+                                        <input type="text" class="form-control" id="orderCode" name="orderCode" th:value="${order.code}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label> 是否退还押金</label> <br>
+                                        <div class="pretty p-default p-round">
+                                            <input type="radio" name="returnDepositFlag" value="1" checked>
+                                            <div class="state p-primary">
+                                                <label>已退</label>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default p-round">
+                                            <input type="radio" name="returnDepositFlag" value="0">
+                                            <div class="state p-primary">
+                                                <label>未退</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <button type="button" onclick="save()" class="btn btn-primary btn-sm ">保存
+                                </button>
+                                <a href="javascript:history.go(-1)" class="btn btn-info btn-sm">返回</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script th:inline="javascript">
+
+        </script>
+    </div>
+</div>
+<script>
+    function save() {
+        $.ajax({
+            type: 'POST',
+            url: '/admin/outrecord/save',
+            async: false,
+            data: $('#form').serialize(),
+            success: function (data) {
+                if (data.code == 0) {
+                    showMsg(data.msg, "error", 1000);
+                } else {
+                    showMsgAndRedirect(data.msg, "success", 2000, "/admin/outrecord");
+
+                }
+            }
+        });
+    }
+</script>
+<div th:replace="admin/module/_footer"></div>
+

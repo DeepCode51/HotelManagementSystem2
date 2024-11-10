@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/module/_header"></div>
+<div class="wrapper">
+    <!-- 菜单栏模块 -->
+    <div th:replace="admin/module/_sidebar"></div>
+    <div class="content-wrapper">
+        <style type="text/css" rel="stylesheet">
+            .draft, .publish, .trash, .checking {
+                list-style: none;
+                float: left;
+                margin: 0;
+                padding-bottom: 10px
+            }
+
+            #btnNewPost {
+                margin-left: 4px;
+                padding: 3px 6px;
+                position: relative;
+                top: -4px;
+                border: 1px solid #ccc;
+                border-radius: 2px;
+                background: #fff;
+                text-shadow: none;
+                font-weight: 600;
+                font-size: 12px;
+                line-height: normal;
+                color: #3c8dbc;
+                cursor: pointer;
+                transition: all .2s ease-in-out
+            }
+
+            #btnNewPost:hover {
+                background: #3c8dbc;
+                color: #fff
+            }
+
+            .label {
+                background-color: #d6cdcd;
+            }
+
+            .box-body {
+                padding: 0;
+            }
+
+            .box {
+                border-top: 0;
+            }
+        </style>
+        <section class="content-header">
+            <h1 style="display: inline-block;">订单管理</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a data-pjax="true" href="/admin">
+                        <i class="fa fa-dashboard"></i> 首页</a>
+                </li>
+                <li><a data-pjax="true" href="#">订单管理</a></li>
+                <li class="active">订单列表</li>
+            </ol>
+        </section>
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <div class="col-md-6 no-padding">
+                        <!--                                        订单状态：0待支付，1已支付，2已退房, 3已取消-->
+
+                        <ul style="list-style: none;padding-left: 0; vertical-align: center;margin-top: 10px;">
+                            <li class="publish">
+                                <a data-pjax="true" th:style="${status == -1 ? 'color: #000':''}" href="?status=-1">全部 |&nbsp;</a>
+                            </li>
+                            <!--<li class="publish">
+                                <a data-pjax="true" th:style="${status == 0 ? 'color: #000':''}" href="?status=0">待支付 |&nbsp;</a>
+                            </li>-->
+                            <li class="publish">
+                                <a data-pjax="true" th:style="${status == 1 ? 'color: #000':''}" href="?status=1">已支付 |&nbsp;</a>
+                            </li>
+                            <li class="publish">
+                                <a data-pjax="true" th:style="${status == 2 ? 'color: #000':''}" href="?status=2">已退房 |&nbsp;</a>
+                            </li>
+                            <li class="publish">
+                                <a data-pjax="true" th:style="${status == 3 ? 'color: #000':''}" href="?status=3">已取消 |&nbsp;</a>
+                            </li>
+                            <li class="publish">
+                                <a data-pjax="true" th:style="${status == 4 ? 'color: #000':''}" href="?status=4">支付超时 &nbsp;</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="md"
+                             style="margin-bottom: 10px; text-align:right;padding-left: 0; padding-right: 0;">
+                            <form class="form-inline" action="/admin/order">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" title="" name="keywords"
+                                           th:value="${keywords}" placeholder="订单号/手机号/身份证/姓名">
+                                </div>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-body table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>订单号</th>
+                                    <th class="col-md-2" style="width: 90px">客房名称</th>
+                                    <th class="col-md-2" style="width: 90px">联系人信息</th>
+                                    <th class="col-md-2" style="width: 180px">住宿时间</th>
+                                    <th class="col-md-2" style="width: 90px">入住信息</th>
+                                    <th>总价</th>
+                                    <th>状态</th>
+                                    <th>入住状态</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:id="'order-'+${order.id}" th:each="order : ${orders}">
+                                    <td>
+                                        <a th:href="'/order/'+${order.id}"
+                                           target="_blank">[[${order.code}]]
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a th:href="'/post/'+${order.postId}">[[${order.postNumber}]]-[[${order.postTitle}]]</a>
+                                    </td>
+                                    <td>
+                                        姓名：[[${order.name}]] <br>
+                                        手机号：[[${order.phone}]] <br>
+                                        身份证：[[${order.idCard}]] <br>
+                                    </td>
+                                    <td>
+                                        入住日期：[[${order.startDate}]] <br>
+                                        离店日期：[[${order.endDate}]] <br>
+                                        共计天数：[[${order.quantity}]]天 <br>
+                                    </td>
+                                    <td>
+                                        姓名：[[${order.inrecord != null ? order.inrecord.name : ""}]] <br>
+                                        手机号：[[${order.inrecord != null ? order.inrecord.phone : ""}]] <br>
+                                        身份证：[[${order.inrecord != null ? order.inrecord.idCard : ""}]] <br>
+                                    </td>
+                                    <td>
+                                        ¥[[${order.totalPrice}]]
+                                    </td>
+                                    <td>
+<!--                                        订单状态：0待支付，1已支付，2已退房, 3已取消-->
+                                        <span th:if="${order.status == 0}" class="text-warning">待支付</span>
+                                        <span th:if="${order.status == 1}" class="text-info">已支付</span>
+                                        <span th:if="${order.status == 2}" class="text-success">已退房</span>
+                                        <span th:if="${order.status == 3}" class="text-danger">已取消</span>
+                                        <span th:if="${order.status == 4}" class="text-danger">支付超时</span>
+                                    </td>
+                                    <td>
+                                        [[${order.checkInStatus == null ? '未入住' : order.checkInStatus}]]
+                                    </td>
+                                    <td th:text="${#dates.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td>
+                                        <a th:if="${isCustomer && order.status == 0}" th:href="'/payment/alipay/create?orderId='+${order.id}" class="btn btn-xs btn-bitbucket">支付</a>
+
+
+                                        <!--<button th:if="${order.status == 1 && (order.checkInStatus != null && order.checkInStatus !='已退房')} " class="btn btn-success btn-xs "  th:onclick="'finishIt('+${order.id}+')'">退房</button>
+-->
+                                        <!--                                        客户显示-->
+                                        <button th:if="${isCustomer && order.status == 1}" class="btn btn-warning btn-xs " th:onclick="'setOrderId('+${order.id}+')'" data-toggle="modal" data-target="#extendOrder">续订</button>
+                                        <button th:if="${isCustomer && order.status == 0}" class="btn btn-danger btn-xs "  th:onclick="'cancelIt('+${order.id}+')'">取消订单</button>
+
+
+                                        <!--                                        非客户显示-->
+                                        <button th:if="${!isCustomer}" class="btn btn-danger btn-xs role-customer-hide " th:onclick="'removeIt('+${order.id}+')'">删除</button>
+                                        <a th:if="${!isCustomer && order.status == 1 && (order.checkInStatus == null || order.checkInStatus =='未入住')}" th:href="'/admin/inrecord/new?orderId='+${order.id}" class="btn btn-xs btn-info role-customer-hide">入住登记</a>
+                                        <a th:if="${!isCustomer && (order.status == 1 || order.status == 2)  && (order.checkInStatus != null && order.checkInStatus !='已退房')}" th:href="'/admin/outrecord/new?orderId='+${order.id}" class="btn btn-xs btn-bitbucket">退房登记</a>
+                                    </td>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="box-footer clearfix">
+                            <div class="no-margin pull-left">
+                                第 [[${pageInfo.current}]] / [[${pageInfo.pages}]] 页
+                            </div>
+                            <ul class="pagination no-margin pull-right">
+                                <li><a data-pjax="true" th:classappend="${pageInfo.current == 1 ? 'disabled' : ''}"
+                                       class="btn btn-sm"
+                                       th:href="'/admin/order?status='+${status}+'&keywords='+${keywords}">
+                                    首页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current == 1 ? 'disabled' : ''}"
+                                       th:href="'/admin/order?page='+${pageInfo.current-1}+'&status='+${status}+'&keywords='+${keywords}">
+                                    上一页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current >= pageInfo.pages ? 'disabled' : ''}"
+                                       th:href="'/admin/order?page='+${pageInfo.current+1}+'&status='+${status}+'&keywords='+${keywords}">
+                                    下一页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current >= pageInfo.pages ? 'disabled' : ''}"
+                                       th:href="'/admin/order?page='+${pageInfo.pages}+'&status='+${status}+'&keywords='+${keywords}">
+                                    尾页
+                                </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <div id="extendOrder" class="modal"
+             style="width: 300px;height:250px; margin: auto auto ; background: #ffffff;">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3>续订客房</h3>
+            </div>
+            <div class="modal-body">
+                <p>请选择新的退房日期</p>
+                <input type="hidden" id="orderId">
+                <input type="date" id="endDate" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <a href="#" onclick="extendIt()" class="btn btn-success">续订</a>
+            </div>
+        </div>
+
+        <script>
+
+
+            function setOrderId(id) {
+                $('#orderId').val(id);
+            }
+
+            function extendIt() {
+                var endDate = $('#endDate').val();
+                if (endDate == '') {
+                    showMsg("请输入退房日期", "info", 2000);
+                    return;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/order/extend',
+                    async: false,
+                    data: {
+                        'id': $('#orderId').val(),
+                        'endDate': $('#endDate').val()
+                    },
+                    success: function (data) {
+                        if (data.code == 0) {
+                            showMsg(data.msg, "error", 1000);
+                        } else {
+                            showMsgAndReload(data.msg, "success", 2000);
+                        }
+                    }
+                });
+
+            }
+
+            function finishIt(id) {
+                layer.confirm('请确认是否退房完结订单吗', function (index) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/order/finish',
+                        async: false,
+                        data: {
+                            'id': id
+                        },
+                        success: function (data) {
+                            if (data.code == 0) {
+                                showMsg(data.msg, "error", 1000);
+                            } else {
+                                showMsgAndReload(data.msg, "success", 2000);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+
+            function cancelIt(id) {
+                layer.confirm('请确认是否取消订单吗？', function (index) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/order/cancel',
+                        async: false,
+                        data: {
+                            'id': id
+                        },
+                        success: function (data) {
+                            if (data.code == 0) {
+                                showMsg(data.msg, "error", 1000);
+                            } else {
+                                showMsgAndReload(data.msg, "success", 2000);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+
+            function removeIt(id) {
+                layer.confirm('请确认是否删除订单', function (index) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/order/delete',
+                        async: false,
+                        data: {
+                            'id': id
+                        },
+                        success: function (data) {
+                            if (data.code == 0) {
+                                showMsg(data.msg, "error", 1000);
+                            } else {
+                                showMsgAndReload(data.msg, "success", 2000);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+
+
+        </script>
+    </div>
+</div>
+
+
+<div th:replace="admin/module/_footer"></div>

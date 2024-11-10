@@ -1,0 +1,93 @@
+﻿<!doctype html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<div th:replace="home/module/_header"></div>
+
+<!-- breadcrumbs starts -->
+<section class="breadcrumb-outer">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <h2>留言板</h2>
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">首页</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">留言板</li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+<!-- breadcrumbs Ends -->
+
+<!-- breadcrumbs Ends -->
+<section id="checkout-main" class="checkout-main section-padding">
+    <div class="container">
+        <div class="detail-review">
+            <div class="comment-box mar-top-20" style="margin-bottom: 30px;">
+                <h4>发布留言内容</h4>
+                <form>
+                    <div class="row">
+                        <div class="textarea col-xs-12">
+                            <textarea placeholder="文明留言" id="content"></textarea>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="comment-btn">
+                                <a href="javascript:void(0)" id="btn-comment" class="btn btn-orange">提交</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <h4>总共 [[${comments.total}]] 条留言</h4>
+            <div class="review-outer">
+                <ul>
+                    <li th:each="c :${comments.records}">
+                        <div class="review-item">
+                            <div class="review-image">
+                                <img th:src="${c.user.userAvatar}" style="width: 80%;" alt="image">
+                            </div>
+                            <div class="review-content">
+
+                                <h5>[[${c.user.userDisplayName}]]</h5>
+                                <p class="date">
+                                    [[${#dates.format(c.createTime,'yyyy-MM-dd HH:mm:ss')}]]
+                                </p>
+                                <p>[[${c.content}]]</p>
+                            </div>
+                        </div>
+                        <ul th:if="${c.replyList != null && c.replyList.size() > 0}">
+                            <li th:each="c2 :${c.replyList}">
+                                <div class="review-item">
+                                    <div class="review-image">
+                                        <img th:src="${c2.user.userAvatar}" style="width: 80%;" alt="image">
+
+                                    </div>
+                                    <div class="review-content">
+                                        <h5>[[${c2.user.userDisplayName}]]</h5>
+                                        <p class="date">
+                                            [[${#dates.format(c2.createTime,'yyyy-MM-dd HH:mm:ss')}]]
+                                        </p>
+                                        <p>[[${c2.content}]]</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="pagination-content text-center" th:if="${comments.total > 0}">
+            <ul class="pagination">
+                <li th:if="${comments.hasPrevious()}"><a th:href="'?page='+${comments.current-1}"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li>
+                <li th:classappend="${comments.current == i ? 'active' : ''}" th:each="i: ${#numbers.sequence(1, comments.pages)}">
+                    <a th:href="'?page='+${i}">[[${i}]]</a>
+                </li>
+                <li th:if="${comments.hasNext()}"><a th:href="'?page='+${comments.current+1}"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+<div th:replace="home/module/_footer"></div>

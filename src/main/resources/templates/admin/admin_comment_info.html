@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/module/_header"></div>
+<style>
+    .draft, .publish, .trash, .checking {
+        list-style: none;
+        float: left;
+        margin: 0;
+        padding-bottom: 10px
+    }
+</style>
+<div class="wrapper">
+    <!-- 菜单栏模块 -->
+    <div th:replace="admin/module/_sidebar"></div>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1 style="display: inline-block;">留言内容</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a data-pjax="true" href="/admin">
+                        <i class="fa fa-dashboard"></i> 首页</a>
+                </li>
+                <li><a data-pjax="true" href="/admin/comment">留言管理</a></li>
+                <li class="active">留言内容</li>
+            </ol>
+        </section>
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-md-12" style="padding:5px 0;">
+                    <form action="" id="profileForm">
+                        <div class="form-row">
+
+                           <div class="col-md-6 no-padding">
+                               <div class="form-group col-md-12">
+                                   <label>留言人</label>
+                                   [[${comment.user.userDisplayName}]]
+                               </div>
+
+                               <div class="form-group col-md-12">
+                                   <label>留言内容</label>
+                                   [[${comment.content}]]
+                               </div>
+
+
+                               <div class="form-group col-md-12 text-danger" th:if="${comment.replyList.size() == 0}">
+                                   暂无回复
+                               </div>
+                               <div th:each="reply : ${comment.replyList}">
+
+                                   <div class="form-group col-md-12">
+                                       <label>回复人</label>
+                                       [[${reply.user.userDisplayName}]]
+                                   </div>
+
+                                   <div class="form-group col-md-12">
+                                       <label>回复内容</label>
+                                       [[${reply.content}]]
+                                   </div>
+                               </div>
+
+                           </div>
+                           <div class="col-md-6">
+
+                           </div>
+
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-12 col-md-12">
+                                <a class="btn btn-xs btn-info" href="javascript:history.go(-1)">返回</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+<div th:replace="admin/module/_footer"></div>

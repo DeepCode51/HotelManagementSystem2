@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/module/_header"></div>
+<div class="wrapper">
+    <!-- 菜单栏模块 -->
+    <div th:replace="admin/module/_sidebar"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <style type="text/css">
+            #cateId option {
+                border-radius: 0;
+            }
+
+            .form-horizontal .control-label {
+                text-align: left;
+            }
+
+            .editor-preview-active img, .editor-preview-active-side img {
+                width: 100%;
+            }
+
+            .fr-toolbar {
+                border-top: 1px solid #ccc !important;
+            }
+
+            .fr-wrapper > div[style*='z-index: 9999'] {
+                position: absolute;
+                top: -10000px;
+                opacity: 0;
+                height: 0;
+            }
+
+            .fr-view img.fr-dib {
+                margin: 5px!important;
+                width: 400px!important;
+                height: 200px!important;
+            }
+        </style>
+        <section class="content-header">
+            <h1 style="display: inline-block;">客房发布</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a data-pjax="true" href="#"><i
+                            class="fa fa-dashboard"></i> 首页</a>
+                </li>
+                <li>
+                    <a data-pjax="true" href="/admin/post">客房管理</a>
+                </li>
+                <li class="active">客房发布</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="box box-primary">
+                        <!-- form start -->
+                        <form role="form">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <input type="text" class="form-control input-lg" id="postTitle" placeholder="请输入标题">
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control input-lg" rows="8" id="postContent" placeholder="客房描述信息"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control  input-lg" id="cateId">
+                                        <option value="1" disabled>客房类型</option>
+                                        <option th:each="c : ${categories}" th:value="${c.id}">[[${c.cateName}]]</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control input-lg" id="number"   placeholder="房间号" >
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control input-lg" id="price"   placeholder="客房价格" >
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input id='postThumbnail' name="postThumbnail" placeholder="缩略图" class="form-control input-lg" onclick="$('#postThumbnailFile').click();">
+                                        <label class="input-group-btn">
+                                            <input type="button" id="i-check" value="上传缩略图"
+                                                   style="border-radius: 0; border-left: 0;" class="btn btn-info btn-lg"
+                                                   onclick="$('#postThumbnailFile').click();">
+                                        </label>
+                                        <input type="file" id="postThumbnailFile" accept=".png, .jpg, .jpeg" style="display: none">
+                                    </div>
+                                </div>
+                                <div class="form-group" id='edit'>客房图片</div>
+
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="button" class="btn btn-primary" onclick="push(0)">发布</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <script>
+
+
+            //页面加载完成后再执行
+            $(function () {
+                $('#edit').froalaEditor({
+                    heightMin: 300,
+                    heightMax: 1000,
+                    placeholderText: '',
+                    pastePlain: true,
+                    theme: 'gray',
+                    fontFamilySelection: true,
+                    fontSizeSelection: true,
+                    paragraphFormatSelection: true,
+                    toolbarButtons: ['insertImage'],
+                    imageAllowedTypes: ['jpg', 'gif', 'png', 'jpeg', 'svg', 'psd'],
+                    imageDefaultWidth: 100,
+                    imageInsertButtons: ['imageBack', '|', 'imageUpload', 'imageByURL'],
+                    imageUploadURL: '/admin/file/upload',
+                    imageManagerLoadURL: '/admin/file/upload',
+                    imageManagerLoadMethod: "GET",
+                    imageManagerPageSize: 4,
+                    imageManagerScrollOffset: 20,
+                    fileUploadURL: '/admin/file/upload',
+                    videoUploadURL: '/admin/file/upload',
+                    imagePaste: true,
+                    imageMove: true,
+                    pastePlain: true,
+                    fileMaxSize: 1024 * 1024 * 2000,
+                    toolbarStickyOffset: 50,
+                    tableResizer: true,
+                    language:'zh_cn'
+                });
+
+            });
+
+            /**
+             * 上传缩略图
+             */
+            $('body').on('change', '#postThumbnailFile', function () {
+                var formData = new FormData();
+                var files = $($(this))[0].files[0];
+                formData.append("file", files);
+                $.ajax({
+                    url: '/admin/file/upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                        $('#postThumbnail').val(data.link);
+                        // alert('上传成功');
+                    }
+                    , error: function (res) {
+                        // alert('错误');
+                    }
+                });
+            })
+
+
+        </script>
+    </div>
+
+</div>
+<div th:replace="admin/module/_footer"></div>

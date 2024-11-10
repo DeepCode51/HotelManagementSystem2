@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/module/_header"></div>
+
+<div class="wrapper">
+    <!-- 菜单栏模块 -->
+    <div th:replace="admin/module/_sidebar"></div>
+    <div class="content-wrapper">
+        <style>
+            .draft, .publish, .trash, .checking {
+                list-style: none;
+                float: left;
+                margin: 0;
+                padding-bottom: 10px
+            }
+        </style>
+        <section class="content-header">
+            <h1 style="display: inline-block;">留言管理</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a data-pjax="true" href="/admin">
+                        <i class="fa fa-dashboard"></i> 首页</a>
+                </li>
+                <li><a data-pjax="true" href="#">留言管理</a></li>
+                <li class="active">留言列表</li>
+            </ol>
+        </section>
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul style="list-style: none;padding-left: 0; vertical-align: center">
+                        <li class="publish">
+                            <a data-pjax="true" th:style="${replyFlag == -1 ? 'color: #000':''}" href="?replyFlag=-1">全部
+                                |&nbsp;</a>
+                        </li>
+                        <li class="publish">
+                            <a data-pjax="true" th:style="${replyFlag == 0 ? 'color: #000':''}" href="?replyFlag=0">待回复
+                                |&nbsp;</a>
+                        </li>
+                        <li class="publish">
+                            <a data-pjax="true" th:style="${replyFlag == 1 ? 'color: #000':''}" href="?replyFlag=1">已回复 </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-xs-12">
+                    <div class="col-md-4 col-xs-12" style="margin-bottom: 10px;padding-left: 0;">
+
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-body table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th class="col-md-2">留言人</th>
+                                    <th class="col-md-5">留言内容</th>
+                                    <th class="col-md-1">状态</th>
+                                    <th class="col-md-2">留言时间</th>
+                                    <th class="col-md-2">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:id="'comment-'+${comment.id}" th:each="comment : ${commentList}">
+                                    <td>
+                                        [[${comment.user.userDisplayName}]]
+                                    </td>
+                                    <td>
+                                        [[${comment.content}]]
+                                    </td>
+                                    <td>
+                                        <span th:if="${comment.replyFlag == 1}" class="text-success">已回复</span>
+                                        <span th:if="${comment.replyFlag == 0}" class="text-danger">未回复</span>
+                                    </td>
+                                    <td th:text="${#dates.format(comment.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td>
+                                        <a th:href="'/admin/comment/info?id='+${comment.id}"
+                                           class="btn btn-primary btn-xs">查看</a>
+                                        <button class="btn btn-info btn-xs "
+                                                th:onclick="'replyShow('+${comment.id}+')'">回复
+                                        </button>
+
+                                        <button class="btn btn-danger btn-xs " th:if="${isAdmin}"
+                                                th:onclick="'removeIt('+${comment.id}+')'">
+                                            删除
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="box-footer clearfix">
+                            <div class="no-margin pull-left">
+                                第 [[${pageInfo.current}]] / [[${pageInfo.pages}]] 页
+                            </div>
+                            <ul class="pagination no-margin pull-right">
+                                <li><a data-pjax="true" th:classappend="${pageInfo.current == 1 ? 'disabled' : ''}"
+                                       class="btn btn-sm"
+                                       th:href="'/admin/comment?replyFlag='+${replyFlag}">
+                                    首页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current == 1 ? 'disabled' : ''}"
+                                       th:href="'/admin/comment?replyFlag='+${replyFlag}+'&page='+${pageInfo.current-1}">
+                                    上一页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current >= pageInfo.pages ? 'disabled' : ''}"
+                                       th:href="'/admin/comment?replyFlag='+${replyFlag}+'&page='+${pageInfo.current+1}">
+                                    下一页
+                                </a>
+                                </li>
+                                <li><a data-pjax="true" class="btn btn-sm"
+                                       th:classappend="${pageInfo.current >= pageInfo.pages ? 'disabled' : ''}"
+                                       th:href="'/admin/comment?replyFlag='+${replyFlag}+'&page='+${pageInfo.pages}">
+                                    尾页
+                                </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 回复弹出层 -->
+        <div class="modal fade" id="commentReplyModal">
+            <div class="modal-dialog">
+                <div class="modal-content message_align">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">回复</h4>
+                    </div>
+                    <form method="post" action="/admin/comment/reply" id="commentReplyForm">
+                        <div class="modal-body">
+                            <textarea class="form-control comment-input-content" rows="5" id="commentContent"
+                                      name="content" style="resize: none"></textarea>
+                            <input type="hidden" name="pid" id="pid">
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="id" name="id" value=""/>
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">取消
+                            </button>
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    onclick="replyIt()">确定
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+
+
+            function removeIt(id) {
+                layer.confirm('请确认是否删除该留言', function (index) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/comment/delete',
+                        async: false,
+                        data: {
+                            'id': id
+                        },
+                        success: function (data) {
+                            if (data.code == 0) {
+                                showMsg(data.msg, "error", 1000);
+                            } else {
+                                showMsgAndReload(data.msg, "success", 2000);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+
+            function replyIt() {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/comment/reply',
+                    async: false,
+                    data: $('#commentReplyForm').serialize(),
+                    success: function (data) {
+                        if (data.code == 0) {
+                            showMsg(data.msg, "error", 1000);
+                        } else {
+                            showMsgAndReload(data.msg, "success", 1000);
+                        }
+                    }
+                });
+            };
+
+
+            function replyShow(id) {
+                $('#pid').val(id);
+                $('#commentReplyModal').modal();
+            }
+
+        </script>
+    </div>
+</div>
+<div th:replace="admin/module/_footer"></div>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<div th:replace="home/module/_header"></div>
+
+<!-- breadcrumbs starts -->
+<section class="breadcrumb-outer">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <h2>支付成功</h2>
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">首页</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">支付成功</li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+<!-- breadcrumbs Ends -->
+<section id="checkout-main" class="checkout-main section-padding">
+    <div class="container">
+        <div class="checkout-inner">
+
+            <h2>支付成功</h2>
+            <a href="/admin/order" class="btn btn-success">前往订单中心</a>
+
+        </div>
+    </div>
+</section>
+
+<div th:replace="home/module/_footer"></div>
